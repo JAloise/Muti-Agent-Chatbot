@@ -1,24 +1,56 @@
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
 from agents.templates import general_template,ai_template,concordia_template
+from constants import EMPTY_DATA,CONCORDIA_DATA
+from langchain_chroma import Chroma
+from langchain_ollama import OllamaEmbeddings
+from agents.helper_function import emmbeded_pdf_data
+import os
 
+
+
+'''================== Generic Agent =================='''
 class Agent:
-  def __init__(self, model_type, prompt_type):
+  def __init__(self, model_type, prompt_type,data):
       self.model = OllamaLLM(model=model_type)
       self.prompt = ChatPromptTemplate.from_template(prompt_type)
       self.chain = self.prompt | self.model
+      self.vector_db = None
+      self.retriever = None
+      #print(data)
+      if data:
+          #print("start")
+          self.initialize_data_retrival(data)
+
+  def initialize_data_retrival(self,data):
+      emmbedding = OllamaEmbeddings(model="mxbai-embed-large")
+      if not os.path.exists(CONCORDIA_DATA[2]) or len(os.listdir(CONCORDIA_DATA[2])) == 0:
+          # start vectorization
+          emmbeded_pdf_data(emmbedding,CONCORDIA_DATA[0],CONCORDIA_DATA[1],CONCORDIA_DATA[2])
+      # intializing agent
+      self.vector_db = Chroma(
+          embedding_function=emmbedding,
+          persist_directory=data[2],
+          collection_name=data[0],)
+      self.retriever = self.vector_db.as_retriever()
 
   def get_response(self,question):
-      return self.chain.invoke({"question": question})
+      if self.retriever:
+        info = self.retriever.invoke(question)
+        #print(info)
+        return self.chain.invoke({"information":info,"question": question})
+      else:
+          return self.chain.invoke({"information":[], "question": question})
 
 
 
+'''================== Control Agent =================='''
 class ControlAgent(Agent):
-    def __init__(self, model_type, prompt_type):
-        super().__init__(model_type, prompt_type)
-        self.general_llm = Agent("llama3.2", general_template)
-        self.ai_llm = Agent("llama3.2", ai_template)
-        self.concordia_llm = Agent("llama3.2", concordia_template)
+    def __init__(self, model_type, prompt_type,data):
+        super().__init__(model_type, prompt_type,data)
+        self.general_llm = Agent("llama3.2", general_template,EMPTY_DATA)
+        self.ai_llm = Agent("llama3.2", ai_template,EMPTY_DATA)
+        self.concordia_llm = Agent("llama3.2", concordia_template,CONCORDIA_DATA)
 
 
 
