@@ -1,6 +1,6 @@
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
-from templates import general_template,ai_template,concordia_template
+from agents.templates import general_template,ai_template,concordia_template
 
 class Agent:
   def __init__(self, model_type, prompt_type):
