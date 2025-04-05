@@ -52,7 +52,8 @@ class ControlAgent(Agent):
         self.general_llm = Agent("llama3.2", general_template,EMPTY_DATA)
         self.ai_llm = Agent("llama3.2", ai_template,EMPTY_DATA)
         self.concordia_llm = Agent("llama3.2", concordia_template,CONCORDIA_DATA)
-
+        #memory
+        self.memory = ""
 
 
     def answer_question(self,question):
@@ -60,8 +61,16 @@ class ControlAgent(Agent):
 
 
     def get_agent(self,question):
-        model_check = self.get_response(question)
-        print(f"Agent key word:{model_check}")
+        info = self.retriever.invoke(question)
+        model_check = self.chain.invoke({"memory":self.memory,"information":info,"input": question})
+        ## debugging
+        print("\n"+ "*"*100)
+        print(f"Unfiltered output: {model_check}")
+        print(f"Model: {model_check.split()[-1]}")
+        print("*" * 100 + "\n")
+        # output
+        model_check = model_check.split()[-1]
+        self.memory = f"Input:{question},Output{model_check}"
         if "concordia" in model_check.lower():
             return self.concordia_llm
         elif "ai" in model_check.lower():
