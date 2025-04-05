@@ -4,7 +4,7 @@ from agents.templates import general_template,ai_template,concordia_template
 from constants import EMPTY_DATA,CONCORDIA_DATA
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
-from agents.helper_function import emmbeded_pdf_data
+from agents.helper_function import emmbeding_data
 import os
 
 
@@ -27,7 +27,7 @@ class Agent:
       emmbedding = OllamaEmbeddings(model="mxbai-embed-large")
       if not os.path.exists(data[2]) or len(os.listdir(data[2])) == 0:
           # start vectorization
-          emmbeded_pdf_data(emmbedding,data[0],data[1],data[2],data[3])
+          emmbeding_data(emmbedding,data[0],data[1],data[2],data[3])
       # intializing agent
       self.vector_db = Chroma(
           embedding_function=emmbedding,
