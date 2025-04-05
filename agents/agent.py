@@ -17,6 +17,7 @@ class Agent:
       self.chain = self.prompt | self.model
       self.vector_db = None
       self.retriever = None
+      # memory
       #print(data)
       if data:
           #print("start")
@@ -24,9 +25,9 @@ class Agent:
 
   def initialize_data_retrival(self,data):
       emmbedding = OllamaEmbeddings(model="mxbai-embed-large")
-      if not os.path.exists(CONCORDIA_DATA[2]) or len(os.listdir(CONCORDIA_DATA[2])) == 0:
+      if not os.path.exists(data[2]) or len(os.listdir(data[2])) == 0:
           # start vectorization
-          emmbeded_pdf_data(emmbedding,CONCORDIA_DATA[0],CONCORDIA_DATA[1],CONCORDIA_DATA[2])
+          emmbeded_pdf_data(emmbedding,data[0],data[1],data[2],data[3])
       # intializing agent
       self.vector_db = Chroma(
           embedding_function=emmbedding,
