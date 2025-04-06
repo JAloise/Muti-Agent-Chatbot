@@ -15,8 +15,10 @@ CONCORDIA_DATA = ["concordia",CONCORDIA_PATH,CONCORDIA_PATH+r"db\\","pdf" ]
 CONTROLLER_PATH = DIRECTORY_PATH + r"\data\controller\\"
 CONTROLLER_DATA = ["controller",CONTROLLER_PATH,CONTROLLER_PATH+r"db\\","csv" ]
 if os.system == "Darwin" or os.system == "Linux":
+    # concordia
     CONCORDIA_PATH = DIRECTORY_PATH + r"/data/concordia//"
     CONCORDIA_DATA = ["concordia", CONCORDIA_PATH, CONCORDIA_PATH + r"db//","pdf"]
+    # controller
     CONTROLLER_PATH = DIRECTORY_PATH + r"/data/controller//"
     CONTROLLER_DATA = ["controller", CONTROLLER_PATH, CONTROLLER_PATH + r"db//", "csv"]
 
