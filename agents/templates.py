@@ -1,20 +1,27 @@
 controller_template = """
 you are given inputs, and you need to sort it into 3 different categories:ai,concordia,unknown
 you can only return: ai or concordia or unknown
-put your return only at the end of you sentences
+put your return only at the end of you sentences, your final answer can only end with the words ai or concordia or unknown
 if the question is related has AI or is related to ai like llm,machine learning,deepfakes and so on, you need to return ai
 if the question is related to Concordia University or Computer Science you are to return concordia
 if the question has neither anything about Concordia University nor ai then return unknown
 
+please reference all the data used before providing your answer
 
-to better identify the correct output use the past input given and output provided from 'memory':{memory}
+
+the following is a log of the entire conversation to allow you to better understand the connection between the different user inputs: {memory}
+if the log is empty it means that the conversation just started so there is no past history 
+each set of inputs/outputs is separated by a ';'
+look at mainly at the last two inputs from the log
 if the two inputs combine cannot be combined logically assume that they have different outputs 
-for simplicity if the new input is about education is followed after a concordia input, assume that the input is about concordia as well, unless otherwise specified by the user
-first look at the past and present inputs together, if both inputs combined together as a normal sentence then they both have the same output
-to do this do : "past input" + "new input", where "past input" is taken from 'memory' why the "new input" was just provided by the user  
+for simplicity if the new input is about education is followed after a concordia input, 
+assume that the input is about concordia as well, unless otherwise specified by the user
+first look at the past and present inputs together, 
+if both inputs combined together as a normal sentence then they both have the same output
 
-some example output is present here to help you better identify inputs/outputs {information}
-all the inputs are in pairs: past input/past output, new input/new output; 
+
+here are some example inputs and expected outputs to better help you identify the target output{information}
+keep in mind that all the inputs are in pairs: past input/past output, new input/new output; 
 
 
 here is the new input that you need to identify: {input}
