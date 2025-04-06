@@ -8,6 +8,10 @@ from agents.helper_function import emmbeding_data
 import os
 
 
+## models used:
+## ollama run llama3.2 || mxbai-embed-large
+
+
 
 '''================== Generic Agent =================='''
 class Agent:
@@ -19,7 +23,7 @@ class Agent:
       self.retriever = None
       # memory
       #print(data)
-      if data:
+      if data and data[3] !="":
           #print("start")
           self.initialize_data_retrival(data)
 
@@ -45,6 +49,7 @@ class Agent:
 
 
 
+
 '''================== Control Agent =================='''
 class ControlAgent(Agent):
     def __init__(self, model_type, prompt_type,data):
@@ -53,7 +58,8 @@ class ControlAgent(Agent):
         self.ai_llm = Agent("llama3.2", ai_template,EMPTY_DATA)
         self.concordia_llm = Agent("llama3.2", concordia_template,CONCORDIA_DATA)
         #memory
-        self.memory = "no past input present"
+        self.filename = data[1]+"log.txt"
+        self.create_log()
 
 
     def answer_question(self,question):
@@ -62,16 +68,16 @@ class ControlAgent(Agent):
 
     def get_agent(self,question):
         info = self.retriever.invoke(question)
-        model_check = self.chain.invoke({"memory":self.memory,"information":info,"input": question})
+        model_check = self.chain.invoke({"memory":self.get_log(),"information":info,"input": question})
         ## debugging
         print("\n"+ "*"*100)
-        print("Controller logic:\n")
+        print("="*20+" Controller logic "+"="*20 +"\n")
         print(f"Unfiltered output:\n{model_check}")
         print(f"Model: {model_check.split()[-1]}")
         print("*" * 100 + "\n")
-        # output
+        ## end of debugging output
         model_check = model_check.split()[-1]
-        self.memory = f"Input:{question},Output{model_check}"
+        self.save_to_log(f"Input:{question},Output:{model_check};")
         if "concordia" in model_check.lower():
             return self.concordia_llm
         elif "ai" in model_check.lower():
@@ -80,5 +86,15 @@ class ControlAgent(Agent):
             return self.general_llm
 
 
+    def create_log(self):
+      open(self.filename,"w").close()
+
+    def save_to_log(self,data):
+        f= open(self.filename,"a")
+        f.write(data)
+        f.close()
+
+    def get_log(self):
+        return open(self.filename,"r").read()
 
 

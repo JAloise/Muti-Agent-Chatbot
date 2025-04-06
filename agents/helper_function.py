@@ -28,7 +28,3 @@ def emmbeding_data(embedding,collection_name,data_path,persist_data_path,data_ty
 
 
 
-# quetions = ["what is SOEN 423","can you give me description of its course material","then what is SOEN 422","Compare soen 423 and soen 422",
-#             "what are the preriqusites of computer science", "How many credits is the program","how logn does it take to finish the program",
-#             "which courses cover embedded systems","which courses cover programing", "what si soen 390","what are its preriquisites","do I need to take it",
-#             "which programs cover math","how many credits do i need to complete computer science"]

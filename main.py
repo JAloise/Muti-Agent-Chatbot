@@ -1,18 +1,19 @@
 from agents.templates import controller_template
 from agents.agent import ControlAgent
 from constants import CONTROLLER_DATA
+from testing import model_test
 import time
-# models
-# ollama run llama3.2 / gemma3
-#response = ollama.list()
-#print(response)
 
+
+def chatbot_intro():
+    print("*" * 100 + "\n" + "*" * 100)  # visual line
+    print("Chatbot: Ask a question?(use q to quit)\n")
 
 def main():
     # create model
     controller_llm = ControlAgent("llama3.2", controller_template,CONTROLLER_DATA)
-    print("*" * 100 + "\n" + "*" * 100) # visual line
-    print("Chatbot: Ask a question?(use q to quit)\n")
+    model_test(controller_llm) # ~model testing
+    chatbot_intro()
     while True:
         start_time = time.time() # time for testing
         question = input("You: ")
