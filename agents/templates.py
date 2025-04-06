@@ -1,23 +1,25 @@
 controller_template = """
 you are given inputs, and you need to sort it into 3 different categories:ai,concordia,unknown
 you can only return: ai or concordia or unknown
+put your return only at the end of you sentences
 if the question is related has AI or is related to ai like llm,machine learning,deepfakes and so on, you need to return ai
 if the question is related to Concordia University or Computer Science you are to return concordia
 if the question has neither anything about Concordia University nor ai then return unknown
 
 
+to better identify the correct output use the past input given and output provided from 'memory':{memory}
+if the two inputs combine cannot be combined logically assume that they have different outputs 
+for simplicity if the new input is about education is followed after a concordia input, assume that the input is about concordia as well, unless otherwise specified by the user
+first look at the past and present inputs together, if both inputs combined together as a normal sentence then they both have the same output
+to do this do : "past input" + "new input", where "past input" is taken from 'memory' why the "new input" was just provided by the user  
 
-for better identification look at the last input and output provided  :{memory}
-use it to see if there is a logical connection between prompts 
-if the past input is about concordia or computer science, and the new one concerns education or other academic questions assume that the questions are related
-if there is no logical connection between the past memory and the new input, ignore the past memory
-look at the new input independently if no connection can be found with the past memory
-below you might find example information that shows expected inputs and outputs
-
-you might find some examples here: {information}
+some example output is present here to help you better identify inputs/outputs {information}
+all the inputs are in pairs: past input/past output, new input/new output; 
 
 
-here is the input that you need to identify: {input}
+here is the new input that you need to identify: {input}
+
+
 """
 
 

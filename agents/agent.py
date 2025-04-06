@@ -53,7 +53,7 @@ class ControlAgent(Agent):
         self.ai_llm = Agent("llama3.2", ai_template,EMPTY_DATA)
         self.concordia_llm = Agent("llama3.2", concordia_template,CONCORDIA_DATA)
         #memory
-        self.memory = ""
+        self.memory = "no past input present"
 
 
     def answer_question(self,question):
@@ -65,7 +65,8 @@ class ControlAgent(Agent):
         model_check = self.chain.invoke({"memory":self.memory,"information":info,"input": question})
         ## debugging
         print("\n"+ "*"*100)
-        print(f"Unfiltered output: {model_check}")
+        print("Controller logic:\n")
+        print(f"Unfiltered output:\n{model_check}")
         print(f"Model: {model_check.split()[-1]}")
         print("*" * 100 + "\n")
         # output
