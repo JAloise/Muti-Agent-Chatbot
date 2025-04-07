@@ -2,6 +2,18 @@
 __pycache__/
 *.py[cod]
 *$py.class
+chatbot/
+
+# macOS system files
+.DS_Store
+data/.DS_Store
+
+# Vector DB directories
+data/concordia/db/
+data/controller/db/
+
+# Log files
+data/controllerlog.txt
 
 # C extensions
 *.so

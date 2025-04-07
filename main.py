@@ -1,7 +1,7 @@
 from agents.templates import controller_template
 from agents.agent import ControlAgent
 from constants import CONTROLLER_DATA
-from testing import model_test
+#from testing import model_test
 import time
 
 
@@ -12,7 +12,7 @@ def chatbot_intro():
 def main():
     # create model
     controller_llm = ControlAgent("llama3.2", controller_template,CONTROLLER_DATA)
-    model_test(controller_llm) # ~model testing
+    #model_test(controller_llm) # ~model testing
     chatbot_intro()
     while True:
         start_time = time.time() # time for testing
