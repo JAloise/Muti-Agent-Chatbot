@@ -1,12 +1,11 @@
 from langchain_ollama.llms import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
-from agents.templates import general_template,ai_template,concordia_template
-from constants import EMPTY_DATA,CONCORDIA_DATA
+from agents.templates import *
+from constants import CONCORDIA_DATA,GENERAL_DATA,AI_DATA,EMPTY_DATA
 from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
 from agents.helper_function import emmbeding_data
 import os
-
 
 ## models used:
 ## ollama run llama3.2 || mxbai-embed-large
@@ -22,6 +21,8 @@ class Agent:
       self.vector_db = None
       self.retriever = None
       # memory
+      self.filename = data[1] + "log.txt"
+      self.create_log()
       #print(data)
       if data and data[3] !="":
           #print("start")
@@ -32,7 +33,7 @@ class Agent:
       if not os.path.exists(data[2]) or len(os.listdir(data[2])) == 0:
           # start vectorization
           emmbeding_data(emmbedding,data[0],data[1],data[2],data[3])
-      # intializing agent
+      # intializing agent vector data
       self.vector_db = Chroma(
           embedding_function=emmbedding,
           persist_directory=data[2],
@@ -40,13 +41,22 @@ class Agent:
       self.retriever = self.vector_db.as_retriever()
 
   def get_response(self,question):
-      if self.retriever:
-        info = self.retriever.invoke(question)
-        #print(info)
-        return self.chain.invoke({"information":info,"question": question})
-      else:
-          return self.chain.invoke({"information":[], "question": question})
+      info = self.retriever.invoke(question) if self.retriever else []
+      response = self.chain.invoke({"memory":self.get_log(),"information":info,"question": question})
+      self.save_to_log(f"Input:{question},\nOutput:{response};\n")
+      return response
 
+
+  def create_log(self):
+    open(self.filename,"w", encoding="utf-8").close()
+
+  def save_to_log(self,data):
+    f= open(self.filename,"a", encoding="utf-8")
+    f.write(data)
+    f.close()
+
+  def get_log(self):
+    return open(self.filename,"r", encoding="utf-8").read()
 
 
 
@@ -54,12 +64,10 @@ class Agent:
 class ControlAgent(Agent):
     def __init__(self, model_type, prompt_type,data):
         super().__init__(model_type, prompt_type,data)
-        self.general_llm = Agent("llama3.2", general_template,EMPTY_DATA)
-        self.ai_llm = Agent("llama3.2", ai_template,EMPTY_DATA)
+        self.general_llm = Agent("llama3.2", general_template,GENERAL_DATA)
+        self.ai_llm = Agent("llama3.2", ai_template,AI_DATA)
         self.concordia_llm = Agent("llama3.2", concordia_template,CONCORDIA_DATA)
-        #memory
-        self.filename = data[1]+"log.txt"
-        self.create_log()
+
 
 
     def answer_question(self,question):
@@ -68,10 +76,11 @@ class ControlAgent(Agent):
 
     def get_agent(self,question):
         info = self.retriever.invoke(question)
-        model_check = self.chain.invoke({"memory":self.get_log(),"information":info,"input": question})
+        model_check = self.chain.invoke({"memory":self.get_log(),"information":[],"input": question})
         ## debugging
         print("\n"+ "*"*100)
         print("="*20+" Controller logic "+"="*20 +"\n")
+        print(f"Inptut: {question}")
         print(f"Unfiltered output:\n{model_check}")
         print(f"Model: {model_check.split()[-1]}")
         print("*" * 100 + "\n")
@@ -86,15 +95,5 @@ class ControlAgent(Agent):
             return self.general_llm
 
 
-    def create_log(self):
-      open(self.filename,"w").close()
-
-    def save_to_log(self,data):
-        f= open(self.filename,"a")
-        f.write(data)
-        f.close()
-
-    def get_log(self):
-        return open(self.filename,"r").read()
 
 
