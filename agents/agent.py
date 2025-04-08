@@ -43,10 +43,19 @@ class Agent:
 
 #option: to combine multiple data sources
   def get_response(self,question):
-      info = self.retriever.invoke(question) if self.retriever else []
-      response = self.chain.invoke({"memory":self.get_log(),"information":info,"question": question})
-      self.save_to_log(f"Input:{question},\nOutput:{response};\n")
-      return response
+    if self.retriever: 
+        info = self.retriever.invoke(question)
+        if not info:
+            wiki_info = wikipedia_summary(question)
+            info = [wiki_info]
+    else: 
+        wiki_info = wikipedia_summary(question)
+        info = [wiki_info]
+    
+    response = self.chain.invoke({"memory":self.get_log(),"information":info,"question": question})
+    self.save_to_log(f"Input:{question},\nOutput:{response};\n")
+    return response
+
 
 
   def create_log(self):

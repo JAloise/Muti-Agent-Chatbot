@@ -5,5 +5,5 @@ langchain-core
 langchain-ollama
 langchain-community
 langchain_text_splitters
-
+wikipedia
 
