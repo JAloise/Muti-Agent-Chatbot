@@ -41,21 +41,32 @@ class Agent:
           collection_name=data[0],)
       self.retriever = self.vector_db.as_retriever()
 
-#option: to combine multiple data sources
+#Wikipedia summary append to vector data
   def get_response(self,question):
+    info = self.retriever.invoke(question) if self.retriever else []
+
+    wiki_info = wikipedia_summary(question)
+    info.append(wiki_info)
+    response = self.chain.invoke({"memory":self.get_log(),"information":info,"question": question})
+    self.save_to_log(f"Input:{question},\nOutput:{response};\n")
+    return response
+    '''
+    use_Wiki = False
     if self.retriever: 
         info = self.retriever.invoke(question)
         if not info:
             wiki_info = wikipedia_summary(question)
             info = [wiki_info]
+            use_Wiki = True
     else: 
         wiki_info = wikipedia_summary(question)
         info = [wiki_info]
-    
+        use_Wiki = True
+    print(f"Wikipedia used: {use_Wiki}")
     response = self.chain.invoke({"memory":self.get_log(),"information":info,"question": question})
     self.save_to_log(f"Input:{question},\nOutput:{response};\n")
     return response
-
+    '''
 
 
   def create_log(self):
@@ -88,6 +99,7 @@ class ControlAgent(Agent):
 
 
     def get_agent(self,question):
+        #queries vector database (chroma)
         info = self.retriever.invoke(question)
         model_check = self.chain.invoke({"memory":self.get_log(),"information":[],"input": question})
         ## debugging

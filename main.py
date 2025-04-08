@@ -18,7 +18,10 @@ def main():
     while True:
         #start_time = time.time() # time for testing
         question = input("You: ")
-        if question.lower() == "q":
+        #question.lower() in ["bye", "goodbye", "thank you bye" ,"exit", "quit"]:
+        exit_keywords = ["bye", "goodbye", "thank you", "thanks", "see you","exit", "quit"]
+        if any(word in question.lower() for word in exit_keywords): 
+            print("Chatbot: Goodbye! See you next time!")
             break
         chatbot_response = controller_llm.answer_question(question)
         print("Chatbot: " + chatbot_response)
