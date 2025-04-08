@@ -5,6 +5,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import DirectoryLoader,CSVLoader
 from langchain_chroma import Chroma
 import glob
+import wikipedia
 
 def emmbeding_data(embedding,collection_name,data_path,persist_data_path,data_type):
     ## =====ingesting=====
@@ -26,5 +27,15 @@ def emmbeding_data(embedding,collection_name,data_path,persist_data_path,data_ty
         collection_name=collection_name,
     )
 
-
+"""Get summary of a Wikipedia page."""
+def wikipedia_summary(query, sentence_count=3):
+    try:
+        summary = wikipedia.summary(query,sentence_count = sentence_count)
+        return summary
+    except wikipedia.exceptions.DisambiguationError as e:
+        return f"Disambiguation error: {e}"
+    except wikipedia.exceptions.PageError as e:
+        return f"Page error: {e}"
+    except Exception as e:
+        return f"An error occurred: {e}"
 

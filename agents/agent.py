@@ -6,6 +6,7 @@ from langchain_chroma import Chroma
 from langchain_ollama import OllamaEmbeddings
 from agents.helper_function import emmbeding_data
 import os
+from agents.helper_function import wikipedia_summary
 
 ## models used:
 ## ollama run llama3.2 || mxbai-embed-large
@@ -40,6 +41,7 @@ class Agent:
           collection_name=data[0],)
       self.retriever = self.vector_db.as_retriever()
 
+#option: to combine multiple data sources
   def get_response(self,question):
       info = self.retriever.invoke(question) if self.retriever else []
       response = self.chain.invoke({"memory":self.get_log(),"information":info,"question": question})
@@ -61,6 +63,8 @@ class Agent:
 
 
 '''================== Control Agent =================='''
+#in main, creates an intance of ControlAgent
+#This agent is responsible for routing the question to the correct agent
 class ControlAgent(Agent):
     def __init__(self, model_type, prompt_type,data):
         super().__init__(model_type, prompt_type,data)
