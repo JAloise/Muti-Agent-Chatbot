@@ -49,7 +49,7 @@ def emmbeded_pdf_data():
 
 
 def retrieve_pdf_data():
-    local_embedding = OllamaEmbeddings(model="mxbai-embed-large")
+    local_embedding = OllamaEmbeddings(model="llama3.2")
     vectordb =Chroma(persist_directory=STORAGE_PATH_CONCORDIA,
                      embedding_function=local_embedding)
     retriever = vectordb.as_retriever()

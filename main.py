@@ -11,21 +11,20 @@ def chatbot_intro():
 
 def main():
     # create model
-    controller_llm = ControlAgent("llama3.2", controller_template,CONTROLLER_DATA)
+    controller_llm = ControlAgent("llama3.2", controller_template, CONTROLLER_DATA)
     #model_test(controller_llm) # ~model testing
     chatbot_intro()
     while True:
-        start_time = time.time() # time for testing
+        start_time = time.perf_counter()  # Start the timer
         question = input("You: ")
         if question.lower() == "q":
             break
         chatbot_response = controller_llm.answer_question(question)
         print("Chatbot: " + chatbot_response)
-        #time segment for testing
-        end_time = time.time()
+        # Time segment for testing
+        end_time = time.perf_counter()  # End the timer
         elapsed_time = end_time - start_time
-        print(f"Answer response time = {elapsed_time:.4f}")
-
+        print(f"Answer response time = {elapsed_time:.4f} seconds")
 
 
 

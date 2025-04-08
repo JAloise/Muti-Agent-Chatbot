@@ -1,12 +1,12 @@
 controller_template = """
-you are given inputs, and you need to sort it into 3 different categories:ai,concordia,unknown
+you are given inputs, and you need to sort it into 3 different categories:ai,concordia,general topics
 when the topic is about concordia only return: concordia
 when the topic is about ai only return: ai
-when the topic is neither concordia or ai return: unknown
-put your return only at the end of you sentences, your final answer can only end with the words ai or concordia or unknown
+when the topic is neither concordia or ai return: general topics
+put your return only at the end of you sentences, your final answer can only end with the words ai or concordia or general topics
 if the question is related has AI or is related to ai like llm,machine learning,deepfakes and so on, you need to return ai
 if the question is related to Concordia University or Computer Science you are to return concordia
-if the question has neither anything about Concordia University nor ai then return unknown
+if the question has neither anything about Concordia University nor ai then return general topics
 
 please reference all the data used before providing your answer
 

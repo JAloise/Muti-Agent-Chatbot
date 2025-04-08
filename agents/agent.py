@@ -29,7 +29,7 @@ class Agent:
           self.initialize_data_retrival(data)
 
   def initialize_data_retrival(self,data):
-      emmbedding = OllamaEmbeddings(model="mxbai-embed-large")
+      emmbedding = OllamaEmbeddings(model="llama3.2")
       if not os.path.exists(data[2]) or len(os.listdir(data[2])) == 0:
           # start vectorization
           emmbeding_data(emmbedding,data[0],data[1],data[2],data[3])
